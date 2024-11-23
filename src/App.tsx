@@ -3,7 +3,7 @@ import './App.css'
 function App() {
   return (
     <div>
-      <h1>Tá perdido fi?</h1>
+      <h1>Bem vindo</h1>
       <URLForm />
     </div>
   )
@@ -19,16 +19,29 @@ function URLForm() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
     const url = formData.get('url') as string;
     if (!isValidURL(url)) {
       alert('URL inválida!')
+      return
     }
 
-    const requiresConfirmation = formData.get('requiresConfirmation') == 'on';
-    console.log(url, requiresConfirmation);
+    try {
+      const response = await fetch(import.meta.env.VITE_BACKEND_API_URL+"/url", {
+        method: "POST",
+        body: formData,
+      })
+      
+      if (!response.ok)
+        throw new Error('Response status: ${response.status}')
+
+      var responseText = response.json.toString()
+      console.log(responseText)
+    } catch (error) {
+      alert((error as Error).message)
+    }
   };
 
   return (
