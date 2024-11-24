@@ -37,7 +37,7 @@ function URLForm() {
       if (!response.ok)
         throw new Error('Response status: ${response.status}')
 
-      var responseText = response.json.toString()
+      var responseText = response.json()
       console.log(responseText)
     } catch (error) {
       alert((error as Error).message)
